@@ -2,34 +2,27 @@
   font-family: 'Alibaba';
   src: url('../../lib/font/Alibaba-PuHuiTi-Medium.ttf');
 }
-
 @font-face {
   font-family: 'REGULAR';
   src: url('../../lib/font/REGULAR.ttf');
 }
-
 @font-face {
   font-family: 'PF_Middle';
   src: url('../../lib/font/PF-middle.ttf');
 }
-
 body {
   background-color: #E9EAED;
 }
-
 .w {
   margin: 0 auto;
   width: 1000px;
 }
-
 .left {
   float: left;
 }
-
 .right {
   float: right;
 }
-
 .clearfix:after {
   content: '';
   height: 0;
@@ -38,35 +31,28 @@ body {
   display: block;
   clear: both;
 }
-
 .clearfix {
   zoom: 1;
 }
-
 .hide {
   display: none;
 }
-
 .show {
   display: block;
 }
-
 ::-webkit-scrollbar-button {
   display: none;
 }
-
 ::-webkit-scrollbar-track {
   background-color: rgba(0, 0, 0, 0);
 }
-
 ::-webkit-scrollbar-track-piece {
-  background-color: rgba(0, 0, 0, .5);
+  background-color: rgba(0, 0, 0, 0.5);
 }
-
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, .3);
+  background-color: rgba(0, 0, 0, 0.3);
 }
-
 ::-webkit-scrollbar {
   width: 5px;
 }
+/*# sourceMappingURL=default.css.map */

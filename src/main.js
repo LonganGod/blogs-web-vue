@@ -3,6 +3,7 @@ import App from './App'
 import router from './router'
 import axios from 'axios'
 import moment from 'moment'
+import $ from 'jquery';
 import {
   MessageBox,
   Message,
