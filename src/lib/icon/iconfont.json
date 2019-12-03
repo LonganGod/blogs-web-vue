@@ -11,6 +11,13 @@
       "font_class": "zuanshi",
       "unicode": "e621",
       "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "3357481",
+      "name": "二维码",
+      "font_class": "erweima",
+      "unicode": "e502",
+      "unicode_decimal": 58626
     }
   ]
 }
