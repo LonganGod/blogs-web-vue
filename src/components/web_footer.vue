@@ -3,7 +3,7 @@
     <p class="footer">design by ws | ws15531085321@163.com</p>
     <div class="tool_bar">
       <div class="user_img">
-        <img src="../../../imgService/articleImg-1574843047158.jpg" alt="">
+        <img src="../../../serverImage/articleImg-1574843047158.jpg" alt="">
       </div>
       <div class="QR_code" @mouseenter="showQRCode" @mouseleave="hideQRCode">
         <i class="iconfont icon-erweima"></i>

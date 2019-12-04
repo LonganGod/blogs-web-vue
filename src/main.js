@@ -7,6 +7,8 @@ import $ from 'jquery';
 import {
   MessageBox,
   Message,
+  Tabs,
+  TabPane,
 } from 'element-ui'
 
 import 'element-ui/lib/theme-chalk/index.css'
@@ -16,8 +18,8 @@ import './lib/icon/iconfont.css'
 
 Vue.config.productionTip = false
 
-// Vue.use(MessageBox)
-// Vue.use(Message)
+Vue.use(Tabs)
+Vue.use(TabPane)
 
 Vue.prototype.$msgbox = MessageBox
 Vue.prototype.$alert = MessageBox.alert
