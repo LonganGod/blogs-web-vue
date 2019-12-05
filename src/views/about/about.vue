@@ -1,7 +1,7 @@
 <template>
   <div class="about_box">
-    <web-header :selectedNav="2" :isScroll="false"></web-header>
-    <div class="main_articles about_main w">
+    <web-header :hash="hash"></web-header>
+    <div class="individual_articles about_main w">
       <div class="article_list clearfix">
         <template v-for="(item, index) in articleList">
           <div :class="['article_item_' + articleNum, 'article_pub', 'clearfix']" :key="item.articleId"
@@ -52,6 +52,7 @@
     name: "aboutBox",
     data() {
       return {
+        hash: location.hash.split('#')[1],
         articleNum: 4,
         articleList: [
           {
@@ -151,7 +152,7 @@
     box-sizing: border-box;
   }
 
-  .main_articles {
+  .individual_articles {
     position: relative;
     margin-top: -80px;
 

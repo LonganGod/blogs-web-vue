@@ -12,15 +12,19 @@
         <!--  <span></span>-->
         <!--</div>-->
         <ul class="nav_list_ul right">
-          <li :class="item.id == selectedNav ? ['nav_item', 'left', 'active'] : ['nav_item' ,'left']"
-              v-for="item in navList" @click="goPage(item.navPath)" :key="item.id">
+          <li
+            :class="item.navPath == hash ? ['nav_item', 'left', 'active'] : ['nav_item' ,'left']"
+            v-for="item in navList"
+            @click="goPage(item.navPath)"
+            :key="item.id"
+          >
             {{item.navName}}
           </li>
         </ul>
       </div>
     </div>
     <div class="main_title" :style="main_title_style">
-      <template v-if="isScroll">
+      <template v-if="hash == '/home' || hash == '/'">
         <div class="main_title_logo">
           <span class="iconfont icon-zuanshi"></span>
         </div>
@@ -40,10 +44,11 @@
 
 <script>
   export default {
-    props: ['selectedNav', 'isScroll'],
+    props: ['hash'],
     name: "web_header",
     created() {
-      if (this.isScroll) {
+      console.log(this.hash)
+      if (this.hash == '/home' || this.hash == '/') {
         this.main_title_style = {height: window.innerHeight + 'px'}
         this.main_nav_style = {height: '180px', opacity: 0}
       } else {
@@ -52,7 +57,7 @@
       }
     },
     mounted() {
-      if (this.isScroll) {
+      if (this.hash == '/home' || this.hash == '/') {
         setInterval(() => {
           this.arrayOpacity++;
         }, 400)
@@ -69,7 +74,7 @@
           {
             id: 1,
             navName: '首页',
-            navPath: '/'
+            navPath: '/home'
           },
           {
             id: 2,
@@ -108,7 +113,7 @@
       },
       // 滚动事件
       pageScroll() {
-        if (this.isScroll) {
+        if (this.hash == '/home' || this.hash == '/') {
           if (window.scrollY >= 10) {
             $(".main_title_logo").css({opacity: 0});
             $(".main_title_content").css({opacity: 0});
