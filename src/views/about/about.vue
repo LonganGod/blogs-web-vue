@@ -1,11 +1,11 @@
 <template>
   <div class="about_box">
-    <web-header :hash="hash"></web-header>
+    <web-header :isScroll="false"></web-header>
     <div class="individual_articles about_main w">
       <div class="article_list clearfix">
         <template v-for="(item, index) in articleList">
           <div :class="['article_item_' + articleNum, 'article_pub', 'clearfix']" :key="item.articleId"
-               v-if="index < articleNum">
+               v-if="index < articleNum" @click="goPage(`/article?articleId=${item.articleId}`)">
             <div class="article_img left">
               <img :src="item.articleImg" alt="">
             </div>
@@ -140,6 +140,11 @@
     components: {
       "web-header": web_header,
       "web-footer": web_footer,
+    },
+    methods: {
+      goPage(path) {
+        this.$router.push(path)
+      }
     }
   };
 </script>

@@ -2,17 +2,17 @@
   <div class="main_articles w">
     <div class="article_list">
       <div v-for="item in articleList" class="article_item" :key="item.articleId">
-        <p class="article_cate link">{{item.articleCate}}</p>
-        <h4 class="article_title link">{{item.articleName}}</h4>
+        <p class="article_cate link" @click="goPage(`/article?articleId=${item.articleId}`)">{{item.articleCate}}</p>
+        <h4 class="article_title link" @click="goPage(`/article?articleId=${item.articleId}`)">{{item.articleName}}</h4>
         <p class="article_info">
           <i class="el-icon-user-solid"></i> {{item.articleWriter}}
           <i class="el-icon-date"></i> {{item.createTime}}
         </p>
-        <div class="article_img">
+        <div class="article_img" @click="goPage(`/article?articleId=${item.articleId}`)">
           <img :src="item.articleImg" alt="">
         </div>
         <p class="article_abstract">{{item.articleAbstract}}</p>
-        <div class="article_more">
+        <div class="article_more" @click="goPage(`/article?articleId=${item.articleId}`)">
           <i class="el-icon-plus"></i>
         </div>
       </div>
@@ -29,14 +29,17 @@
 <script>
   export default {
     name: "web_article_list",
-    props: ['hash'],
+    // 是否激活滚动事件
+    props: ['isScroll'],
+    created() {
+      this.getData()
+    },
     mounted() {
       window.addEventListener('scroll', this.pageScroll)
       $('html, body').scrollTop(0)
     },
     data() {
       return {
-        isScroll: true,
         articleList: [
           {
             articleId: 1,
@@ -120,6 +123,16 @@
       };
     },
     methods: {
+      // 获取文章列表
+      async getData() {
+        let {data} = await this.$axios.get('/api/article/getArticleList', {
+          params: {
+            pageNum: 1,
+            articleNum: 5
+          }
+        })
+        console.log(data)
+      },
       // 清除样式-动画
       removeStyle(els) {
         for (let i = 0; i < els.length; i++) {
@@ -128,11 +141,11 @@
       },
       // 滚动事件
       pageScroll() {
-        if (this.hash == '/home') {
+        if (this.isScroll) {
           if (window.scrollY >= 10) {
-            $(".main_articles").css({opacity: 1, transform: "translateY(-80px)"});
+            $(".home_box .main_articles").css({opacity: 1, marginTop: '-80px'});
           } else {
-            this.removeStyle([$(".main_articles")])
+            this.removeStyle([$(".home_box .main_articles")])
           }
         }
       },
@@ -152,6 +165,7 @@
     padding: 50px 100px;
     box-sizing: border-box;
     position: relative;
+    margin-bottom: 80px;
 
     .article_list {
       text-align: center;
@@ -217,17 +231,24 @@
             background-color: #e2524b;
           }
 
-          &:before {
+          &:before, &:after {
             content: '';
             position: absolute;
-            width: 600px;
+            width: 240px;
             height: 1px;
             background-color: #e0e0e0;
             top: 50%;
-            left: 50%;
-            transform: translateX(-50%);
             cursor: auto;
-            z-index: -1;
+          }
+
+          &:before {
+            left: 0;
+            transform: translateX(-100%);
+          }
+
+          &:after {
+            right: 0;
+            transform: translateX(100%);
           }
 
           i {

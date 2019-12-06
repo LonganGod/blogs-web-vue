@@ -1,21 +1,16 @@
 <template>
   <div class="header_box">
     <div class="main_nav clearfix" :style="main_nav_style">
-      <div class="logo left">
+      <div class="logo left" @click="goPage('/home')">
         <img class="left" src="../assets/images/logo.png"/>
         <span class="left">个人博客</span>
       </div>
       <div class="nav_list right">
-        <!--<div class="nav_icon right" @click="showNav">-->
-        <!--  <span></span>-->
-        <!--  <span></span>-->
-        <!--  <span></span>-->
-        <!--</div>-->
         <ul class="nav_list_ul right">
           <li
-            :class="item.navPath == hash ? ['nav_item', 'left', 'active'] : ['nav_item' ,'left']"
+            :class="(item.id == navId || (item.navPath == '/home' && navId == null)) ? ['nav_item', 'left', 'active'] : ['nav_item' ,'left']"
             v-for="item in navList"
-            @click="goPage(item.navPath)"
+            @click="goPage(item.navPath, item.id)"
             :key="item.id"
           >
             {{item.navName}}
@@ -24,7 +19,7 @@
       </div>
     </div>
     <div class="main_title" :style="main_title_style">
-      <template v-if="hash == '/home' || hash == '/'">
+      <template v-if="isScroll">
         <div class="main_title_logo">
           <span class="iconfont icon-zuanshi"></span>
         </div>
@@ -44,11 +39,12 @@
 
 <script>
   export default {
-    props: ['hash'],
     name: "web_header",
+    // 是否激活滚动事件
+    props: ['isScroll'],
     created() {
-      console.log(this.hash)
-      if (this.hash == '/home' || this.hash == '/') {
+      this.navId = sessionStorage.getItem('navId') ? sessionStorage.getItem('navId') : null
+      if (this.isScroll) {
         this.main_title_style = {height: window.innerHeight + 'px'}
         this.main_nav_style = {height: '180px', opacity: 0}
       } else {
@@ -57,19 +53,21 @@
       }
     },
     mounted() {
-      if (this.hash == '/home' || this.hash == '/') {
-        setInterval(() => {
-          this.arrayOpacity++;
-        }, 400)
-        window.addEventListener('scroll', this.pageScroll)
-      }
+      setInterval(() => {
+        this.arrayOpacity++;
+      }, 400)
+      window.addEventListener('scroll', this.pageScroll)
     },
     data() {
       return {
+        // 当前导航
+        navId: null,
+        // 初始头部样式
         main_title_style: {},
         main_nav_style: {},
+        // 向下箭头
         arrayOpacity: 1,
-        isShowNav: false,
+        // 导航列表
         navList: [
           {
             id: 1,
@@ -84,12 +82,12 @@
           {
             id: 3,
             navName: '慢生活',
-            navPath: '/'
+            navPath: '/cate'
           },
           {
             id: 4,
             navName: '学无止境',
-            navPath: '/'
+            navPath: '/cate'
           },
           {
             id: 5,
@@ -113,7 +111,7 @@
       },
       // 滚动事件
       pageScroll() {
-        if (this.hash == '/home' || this.hash == '/') {
+        if (this.isScroll) {
           if (window.scrollY >= 10) {
             $(".main_title_logo").css({opacity: 0});
             $(".main_title_content").css({opacity: 0});
@@ -124,31 +122,26 @@
             this.removeStyle([
               $(".main_title_logo"),
               $(".main_title_content"),
-              $(".main_title_next"),
-              $('.nav_icon span'),
-              $('.nav_list_ul')
+              $(".main_title_next")
             ])
-            this.isShowNav = false
             this.main_title_style = {height: window.innerHeight + "px"}
             this.main_nav_style = {height: "180px", opacity: 0}
           }
         }
       },
-      // 展示导航
-      showNav() {
-        this.isShowNav = !this.isShowNav
-        if (this.isShowNav) {
-          $('.nav_icon span').eq(1).css({transform: 'translate(100%, -50%)', opacity: 0})
-          $('.nav_icon span').eq(0).css({transform: 'rotate(45deg)'})
-          $('.nav_icon span').eq(2).css({transform: 'rotate(-45deg)'})
-          $('.nav_list_ul').css({transform: 'translateY(0px)', opacity: 1})
-        } else {
-          this.removeStyle([$('.nav_icon span'), $('.nav_list_ul')])
-        }
-      },
       // 跳转页面
-      goPage(path) {
-        this.$router.push(path)
+      goPage(path, navId) {
+        if (navId) {
+          sessionStorage.setItem('navId', navId)
+        }
+        if (path == '/' || path == '/home') {
+          sessionStorage.removeItem('navId')
+        }
+        if (path == location.hash.split('#')[1]) {
+          this.$router.go(0)
+        } else {
+          this.$router.push(path)
+        }
       },
       // 向下滚动
       goNext() {
@@ -224,9 +217,7 @@
 
       .nav_list_ul {
         margin-right: 30px;
-        /*transform: translateY(-20px);*/
         transition: all .3s;
-        /*opacity: 0;*/
 
         .nav_item {
           color: #fff;
