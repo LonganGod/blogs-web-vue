@@ -1,7 +1,7 @@
 <template>
   <div class="life_box">
     <web-Header :isScroll="false"></web-Header>
-    <web-article-list :isScroll="false"></web-article-list>
+    <web-article-list :isScroll="false" :articleConfig="articleConfig"></web-article-list>
     <web-Footer></web-Footer>
   </div>
 </template>
@@ -20,7 +20,11 @@
     },
     data() {
       return {
-        hash: location.hash.split('#')[1]
+        articleConfig: {
+          cateId: this.$route.query.cateId,
+          pageNum: 1,
+          articleNum: 5
+        }
       }
     }
   }

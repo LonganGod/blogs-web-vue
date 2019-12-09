@@ -8,10 +8,10 @@
       <div class="nav_list right">
         <ul class="nav_list_ul right">
           <li
-            :class="(item.id == navId || (item.navPath == '/home' && navId == null)) ? ['nav_item', 'left', 'active'] : ['nav_item' ,'left']"
+            :class="(item.navId == navId || (item.navPath == '/home' && navId == null)) ? ['nav_item', 'left', 'active'] : ['nav_item' ,'left']"
             v-for="item in navList"
-            @click="goPage(item.navPath, item.id)"
-            :key="item.id"
+            @click="goPage(item.navPath, item.navId, item.cateId)"
+            :key="item.navId"
           >
             {{item.navName}}
           </li>
@@ -43,6 +43,7 @@
     // 是否激活滚动事件
     props: ['isScroll'],
     created() {
+      this.getData()
       this.navId = sessionStorage.getItem('navId') ? sessionStorage.getItem('navId') : null
       if (this.isScroll) {
         this.main_title_style = {height: window.innerHeight + 'px'}
@@ -68,41 +69,20 @@
         // 向下箭头
         arrayOpacity: 1,
         // 导航列表
-        navList: [
-          {
-            id: 1,
-            navName: '首页',
-            navPath: '/home'
-          },
-          {
-            id: 2,
-            navName: '关于我',
-            navPath: '/about'
-          },
-          {
-            id: 3,
-            navName: '慢生活',
-            navPath: '/cate'
-          },
-          {
-            id: 4,
-            navName: '学无止境',
-            navPath: '/cate'
-          },
-          {
-            id: 5,
-            navName: '时间轴',
-            navPath: '/'
-          },
-          {
-            id: 6,
-            navName: '留言',
-            navPath: '/'
-          },
-        ],
+        navList: [],
       };
     },
+    watch: {
+      $route(to, from) {
+        this.$router.go(0)
+      }
+    },
     methods: {
+      // 获取数据
+      async getData() {
+        let {data} = await this.$axios.get('/api/frontdeskNav/getFrontdeskNavList')
+        this.navList = data.result
+      },
       // 清除样式-动画
       removeStyle(els) {
         for (let i = 0; i < els.length; i++) {
@@ -130,18 +110,14 @@
         }
       },
       // 跳转页面
-      goPage(path, navId) {
+      goPage(path, navId, cateId) {
         if (navId) {
           sessionStorage.setItem('navId', navId)
         }
         if (path == '/' || path == '/home') {
           sessionStorage.removeItem('navId')
         }
-        if (path == location.hash.split('#')[1]) {
-          this.$router.go(0)
-        } else {
-          this.$router.push(path)
-        }
+        this.$router.push(cateId ? {path: path, query: {cateId: cateId}} : path)
       },
       // 向下滚动
       goNext() {

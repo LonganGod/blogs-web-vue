@@ -2,27 +2,33 @@
   <div class="main_articles w">
     <div class="article_list">
       <div v-for="item in articleList" class="article_item" :key="item.articleId">
-        <p class="article_cate link" @click="goPage(`/article?articleId=${item.articleId}`)">{{item.articleCate}}</p>
-        <h4 class="article_title link" @click="goPage(`/article?articleId=${item.articleId}`)">{{item.articleName}}</h4>
+        <p class="article_cate link" @click="goPage('/cate', null, item.cateId)">{{item.cateName}}</p>
+        <h4 class="article_title link" @click="goPage('/article', item.articleId, null)">
+          {{item.articleTitle}}
+        </h4>
         <p class="article_info">
-          <i class="el-icon-user-solid"></i> {{item.articleWriter}}
-          <i class="el-icon-date"></i> {{item.createTime}}
+          <i class="el-icon-user-solid"></i> {{item.adminName}}
+          <i class="el-icon-date"></i> {{item.createTime | dateFormat}}
         </p>
-        <div class="article_img" @click="goPage(`/article?articleId=${item.articleId}`)">
+        <div class="article_img" @click="goPage('/article', item.articleId, null)">
           <img :src="item.articleImg" alt="">
         </div>
         <p class="article_abstract">{{item.articleAbstract}}</p>
-        <div class="article_more" @click="goPage(`/article?articleId=${item.articleId}`)">
+        <div class="article_more" @click="goPage('/article', item.articleId, null)">
           <i class="el-icon-plus"></i>
         </div>
       </div>
     </div>
-    <div class="change_page prev_page">
-      <i class="el-icon-arrow-left"></i>
-    </div>
-    <div class="change_page next_page">
-      <i class="el-icon-arrow-right"></i>
-    </div>
+    <template v-if="articleConfig.pageNum > 1">
+      <div class="change_page prev_page" @click="prev">
+        <i class="el-icon-arrow-left"></i>
+      </div>
+    </template>
+    <template v-if="(articleConfig.pageNum * articleConfig.articleNum) < totalArticle">
+      <div class="change_page next_page" @click="next">
+        <i class="el-icon-arrow-right"></i>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -30,7 +36,7 @@
   export default {
     name: "web_article_list",
     // 是否激活滚动事件
-    props: ['isScroll'],
+    props: ['isScroll', 'articleConfig'],
     created() {
       this.getData()
     },
@@ -40,98 +46,18 @@
     },
     data() {
       return {
-        articleList: [
-          {
-            articleId: 1,
-            articleName: 'GREEN LANTERN FOR GREEN WORLD!',
-            articleWriter: 'Farhan Rizvi',
-            articleCate: 'NATURE',
-            articleLabel: '',
-            articleImg: require('../../../serverImage/article-1.jpg'),
-            articleAbstract: 'Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis' +
-              ' nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate' +
-              ' velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan' +
-              ' et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.',
-            createTime: '2019-09-24',
-          },
-          {
-            articleId: 2,
-            articleName: 'MY FAVORITE SPIDERMAN MOVIE',
-            articleWriter: 'Ratul Ahmed',
-            articleCate: 'MOVIE',
-            articleLabel: '',
-            articleImg: require('../../../serverImage/article-2.jpg'),
-            articleAbstract: 'Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis' +
-              ' nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate' +
-              ' velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan' +
-              ' et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.',
-            createTime: '2019-09-24',
-          },
-          {
-            articleId: 3,
-            articleName: 'GREEN LANTERN FOR GREEN WORLD!',
-            articleWriter: 'Farhan Rizvi',
-            articleCate: 'NATURE',
-            articleLabel: '',
-            articleImg: require('../../../serverImage/article-3.jpg'),
-            articleAbstract: 'Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis' +
-              ' nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate' +
-              ' velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan' +
-              ' et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.',
-            createTime: '2019-09-24',
-          },
-          {
-            articleId: 4,
-            articleName: 'MY FAVORITE SPIDERMAN MOVIE',
-            articleWriter: 'Ratul Ahmed',
-            articleCate: 'MOVIE',
-            articleLabel: '',
-            articleImg: require('../../../serverImage/article-4.jpg'),
-            articleAbstract: 'Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis' +
-              ' nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate' +
-              ' velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan' +
-              ' et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.',
-            createTime: '2019-09-24',
-          },
-          {
-            articleId: 5,
-            articleName: 'GREEN LANTERN FOR GREEN WORLD!',
-            articleWriter: 'Farhan Rizvi',
-            articleCate: 'NATURE',
-            articleLabel: '',
-            articleImg: require('../../../serverImage/article-5.jpg'),
-            articleAbstract: 'Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis' +
-              ' nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate' +
-              ' velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan' +
-              ' et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.',
-            createTime: '2019-09-24',
-          },
-          {
-            articleId: 6,
-            articleName: 'MY FAVORITE SPIDERMAN MOVIE',
-            articleWriter: 'Ratul Ahmed',
-            articleCate: 'MOVIE',
-            articleLabel: '',
-            articleImg: require('../../../serverImage/article-6.jpg'),
-            articleAbstract: 'Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis' +
-              ' nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate' +
-              ' velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan' +
-              ' et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.',
-            createTime: '2019-09-24',
-          },
-        ]
+        articleList: [],
+        totalArticle: 0,
       };
     },
     methods: {
       // 获取文章列表
       async getData() {
         let {data} = await this.$axios.get('/api/article/getArticleList', {
-          params: {
-            pageNum: 1,
-            articleNum: 5
-          }
+          params: this.articleConfig
         })
-        console.log(data)
+        this.articleList = data.result
+        this.totalArticle = data.total
       },
       // 清除样式-动画
       removeStyle(els) {
@@ -150,9 +76,25 @@
         }
       },
       // 跳转页面
-      goPage(path) {
-        this.$router.push(path)
+      goPage(path, articleId, cateId) {
+        if (cateId) {
+          this.$router.push({path: path, query: {cateId: cateId}})
+        } else if (articleId) {
+          this.$router.push({path: path, query: {articleId: articleId}})
+        }
       },
+      // 下一页
+      next() {
+        this.articleConfig.pageNum++
+        this.getData()
+        $('html, body').scrollTop(100)
+      },
+      // 上一页
+      prev() {
+        this.articleConfig.pageNum--
+        this.getData()
+        $('html, body').scrollTop(100)
+      }
     }
   }
 </script>

@@ -5,24 +5,24 @@
       <div class="article_list clearfix">
         <template v-for="(item, index) in articleList">
           <div :class="['article_item_' + articleNum, 'article_pub', 'clearfix']" :key="item.articleId"
-               v-if="index < articleNum" @click="goPage(`/article?articleId=${item.articleId}`)">
+               v-if="index < articleNum" @click="goPage('/article', item.articleId, null)">
             <div class="article_img left">
               <img :src="item.articleImg" alt="">
             </div>
             <div class="article_content left">
               <template v-if="articleNum == 1">
-                <h4 class="article_title">{{item.articleName}}</h4>
+                <h4 class="article_title">{{item.articleTitle}}</h4>
                 <p class="article_abstract">{{item.articleAbstract}}</p>
-                <p class="article_time"><i class="el-icon-date"></i> {{item.createTime}}</p>
+                <p class="article_time"><i class="el-icon-date"></i> {{item.createTime | dateFormat}}</p>
               </template>
               <template v-else>
-                <h4 class="article_title">{{item.articleName}}</h4>
+                <h4 class="article_title">{{item.articleTitle}}</h4>
               </template>
             </div>
           </div>
         </template>
       </div>
-      <div class="article_more">
+      <div class="article_more" @click="goPage('/cate', null, cateId)">
         <i class="el-icon-plus"></i>
       </div>
     </div>
@@ -50,90 +50,14 @@
 
   export default {
     name: "aboutBox",
+    created() {
+      this.getData()
+    },
     data() {
       return {
-        hash: location.hash.split('#')[1],
-        articleNum: 4,
-        articleList: [
-          {
-            articleId: 3,
-            articleName: 'GREEN LANTERN FOR GREEN WORLD!',
-            articleWriter: 'Farhan Rizvi',
-            articleCate: 'NATURE',
-            articleLabel: '',
-            articleImg: require('../../../../serverImage/article-3.jpg'),
-            articleAbstract: 'Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis' +
-              ' nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate' +
-              ' velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan' +
-              ' et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.',
-            createTime: '2019-09-24',
-          },
-          {
-            articleId: 4,
-            articleName: 'MY FAVORITE SPIDERMAN MOVIE',
-            articleWriter: 'Ratul Ahmed',
-            articleCate: 'MOVIE',
-            articleLabel: '',
-            articleImg: require('../../../../serverImage/article-4.jpg'),
-            articleAbstract: 'Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis' +
-              ' nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate' +
-              ' velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan' +
-              ' et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.',
-            createTime: '2019-09-24',
-          },
-          {
-            articleId: 5,
-            articleName: 'GREEN LANTERN FOR GREEN WORLD!',
-            articleWriter: 'Farhan Rizvi',
-            articleCate: 'NATURE',
-            articleLabel: '',
-            articleImg: require('../../../../serverImage/article-5.jpg'),
-            articleAbstract: 'Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis' +
-              ' nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate' +
-              ' velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan' +
-              ' et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.',
-            createTime: '2019-09-24',
-          },
-          {
-            articleId: 6,
-            articleName: 'MY FAVORITE SPIDERMAN MOVIE',
-            articleWriter: 'Ratul Ahmed',
-            articleCate: 'MOVIE',
-            articleLabel: '',
-            articleImg: require('../../../../serverImage/article-6.jpg'),
-            articleAbstract: 'Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis' +
-              ' nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate' +
-              ' velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan' +
-              ' et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.',
-            createTime: '2019-09-24',
-          },
-          {
-            articleId: 1,
-            articleName: 'GREEN LANTERN FOR GREEN WORLD!',
-            articleWriter: 'Farhan Rizvi',
-            articleCate: 'NATURE',
-            articleLabel: '',
-            articleImg: require('../../../../serverImage/article-1.jpg'),
-            articleAbstract: 'Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis' +
-              ' nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate' +
-              ' velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan' +
-              ' et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.',
-            createTime: '2019-09-24',
-          },
-          {
-            articleId: 2,
-            articleName: 'MY FAVORITE SPIDERMAN MOVIE',
-            articleWriter: 'Ratul Ahmed',
-            articleCate: 'MOVIE',
-            articleLabel: '',
-            articleImg: require('../../../../serverImage/article-2.jpg'),
-            articleAbstract: 'Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis' +
-              ' nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate' +
-              ' velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan' +
-              ' et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.',
-            createTime: '2019-09-24',
-          },
-        ],
+        cateId: this.$route.query.cateId,
+        articleNum: 0,
+        articleList: [],
         activeName: 'basisInfo'
       };
     },
@@ -142,9 +66,26 @@
       "web-footer": web_footer,
     },
     methods: {
-      goPage(path) {
-        this.$router.push(path)
-      }
+      // 获取文章列表
+      async getData() {
+        let {data} = await this.$axios.get('/api/article/getArticleList', {
+          params: {
+            cateId: this.$route.query.cateId,
+            pageNum: 1,
+            articleNum: 4
+          }
+        })
+        this.articleList = data.result
+        this.articleNum = data.result.length == 3 ? 2 : data.result.length
+      },
+      // 跳转页面
+      goPage(path, articleId, cateId) {
+        if (cateId) {
+          this.$router.push({path: path, query: {cateId: cateId}})
+        } else if (articleId) {
+          this.$router.push({path: path, query: {articleId: articleId}})
+        }
+      },
     }
   };
 </script>

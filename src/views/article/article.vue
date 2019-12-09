@@ -3,15 +3,16 @@
     <web-Header :false="false"></web-Header>
     <div class="article_content about_main w">
       <div class="article_item">
-        <p class="article_cate link" @click="goPage(`/article?articleId=${article.articleId}`)">
-          {{article.articleCate}}
+        <p class="article_cate link" @click="goPage('/cate', article.cateId)">
+          {{article.cateName}}
         </p>
-        <h4 class="article_title">{{article.articleName}}</h4>
+        <h4 class="article_title">{{article.articleTitle}}</h4>
         <p class="article_info">
-          <i class="el-icon-user-solid"></i> {{article.articleWriter}}
-          <i class="el-icon-date"></i> {{article.createTime}}
+          <i class="el-icon-user-solid"></i> {{article.adminName}}
+          <i class="el-icon-date"></i> {{article.createTime | dateFormat}}
         </p>
         <p class="article_abstract">{{article.articleAbstract}}</p>
+        <div class="article_main" v-html="article.articleContent"></div>
       </div>
     </div>
     <web-Footer></web-Footer>
@@ -24,26 +25,42 @@
 
   export default {
     name: "article_box",
+    created() {
+      this.getData()
+    },
     components: {
       'web-Header': web_header,
       'web-Footer': web_footer
     },
     data() {
       return {
-        article: {
-          articleId: 1,
-          articleName: 'GREEN LANTERN FOR GREEN WORLD!',
-          articleWriter: 'Farhan Rizvi',
-          articleCate: 'NATURE',
-          articleLabel: '',
-          articleImg: require('../../../../serverImage/article-1.jpg'),
-          articleAbstract: 'Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis' +
-            ' nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate' +
-            ' velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan' +
-            ' et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.',
-          createTime: '2019-09-24',
-        }
+        article: {}
       }
+    },
+    methods: {
+      async getData() {
+        let {data} = await this.$axios.get('/api/article/getArticleData', {
+          params: {
+            articleId: this.$route.query.articleId
+          }
+        })
+        this.article = data.result
+      },
+      // 跳转页面
+      goPage(path, cateId) {
+        this.$router.push({path: path, query: {cateId: cateId}})
+      },
+    },
+    updated() {
+      let preStyle = {
+        backgroundColor: '#23241f',
+        color: '#fff',
+        whiteSpace: 'pre-wrap',
+        padding: '15px 30px',
+        fontSize: '16px'
+      }
+      $('.article_main img').css({width: '100%'})
+      $('.article_main pre.ql-syntax').css(preStyle)
     }
   }
 </script>
@@ -96,6 +113,10 @@
         padding-left: 40px;
         border-left: 2px solid #E2413A;
         margin-bottom: 30px;
+      }
+
+      .article_main {
+        text-align: left;
       }
     }
   }
